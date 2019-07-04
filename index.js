@@ -23,8 +23,8 @@ mailin.on('error', function(err) {
 mailin.on('message', async function (connection, data, content) {
     console.log('Get new Mail');
     const mail = await Mails.create({
-        from_address: data.headers.from,
-        to_address: data.headers.to,
+        from_address: data.from.pop().address,
+        to_address: data.to.pop.address,
         subject: data.headers.subject,
         html: data.html,
         text: data.text
@@ -48,7 +48,12 @@ app.get('/recive', async function (req, res) {
     const mails = await Mails.find();
     res.send(mails);
 });
-  
+
+app.get('/recive/:id', async function (req, res) {
+    const mail = await Mails.findById(req.params.id)
+    res.send(mail);
+});
+
 app.listen(3005, function () {
     console.log('listening on port 3000!');
 });
