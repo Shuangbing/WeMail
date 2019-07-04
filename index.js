@@ -33,7 +33,7 @@ mailin.on('message', async function (connection, data, content) {
 
 app.use(express.json())
 
-app.get('/recive', function (req, res) {
+app.get('/recive', async function (req, res) {
     const mails = await Mails.find();
     res.send(mails);
 });
