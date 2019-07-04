@@ -26,10 +26,21 @@ mailin.on('message', async function (connection, data, content) {
         from_address: data.headers.from,
         to_address: data.headers.to,
         subject: data.headers.subject,
-        html: data.html
+        html: data.html,
+        text: data.text
     })
     console.log(mail);
 });
+
+app.disable('etag')
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild')
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS")
+  res.header("X-Powered-By",' 1.0.1')
+  res.header("Content-Type", "application/json;charset=utf-8");
+  next();
+})
 
 app.use(express.json())
 

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "element-ui": "^2.10.1",
     "express": "^4.17.1",
     "install": "^0.13.0",
     "mailin": "^3.0.4",
