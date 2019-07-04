@@ -23,10 +23,20 @@
       >
       <template slot-scope="scope">
         <el-button plain round @click="open(scope.row._id)">本文</el-button>
+        <el-dialog
+        :visible.sync="dialogVisible"
+        title="本文内容"
+        width="80%"
+        :before-close="handleClose">
+        <div width="80%" v-html="html"></div>
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">閉じる</el-button>
+        </span>
+        </el-dialog>
       </template>
     </el-table-column>
-    
   </el-table>
+  
 </template>
 
 
@@ -34,7 +44,9 @@
   export default {
     data(){
         return {
-            mails: []
+            mails: [],
+            html: '<a>Loading</a>',
+            dialogVisible: false,
         }
     },
     methods: {
@@ -43,10 +55,9 @@
           this.mails = res.data
         },
         async open(id) {
-          const res = await this.$http.get('/recive/'+id)
-          this.$alert(res.data.html,  {
-            dangerouslyUseHTMLString: true
-          });
+          const res = await this.$http.get('/recive/'+id);
+          this.html = res.data.html;
+          this.dialogVisible = true;
       }
     },
     created() {
