@@ -1,3 +1,5 @@
+var express = require('express');
+var app = express();
 const mailin = require('mailin');
 const mongoose = require('mongoose');
 const database = require('./config/database')
@@ -29,3 +31,13 @@ mailin.on('message', async function (connection, data, content) {
     console.log(mail);
 });
 
+app.use(express.json())
+
+app.get('/recive', function (req, res) {
+    const mails = await Mails.find();
+    res.send(mails);
+});
+  
+app.listen(3005, function () {
+    console.log('listening on port 3000!');
+});

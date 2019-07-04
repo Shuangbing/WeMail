@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "install": "^0.13.0",
     "mailin": "^3.0.4",
     "mongoose": "^5.6.3",
