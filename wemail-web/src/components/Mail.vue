@@ -19,7 +19,7 @@
     </el-table-column>
     <el-table-column
       label="操作"
-      width="100"
+      width="150"
       >
       <template slot-scope="scope">
         <el-button plain round @click="open(scope.row._id)">本文</el-button>
@@ -45,7 +45,7 @@
     data(){
         return {
             mails: [],
-            html: '<a>Loading</a>',
+            html: '<a>読取中</a>',
             dialogVisible: false,
         }
     },
