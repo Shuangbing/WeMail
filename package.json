@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "element-ui": "^2.10.1",
     "express": "^4.17.1",
     "install": "^0.13.0",
     "mailin": "^3.0.4",
     "mongoose": "^5.6.3",
+    "require-all": "^3.0.0",
     "simplesmtp": "^0.3.35"
   }
 }
