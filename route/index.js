@@ -2,14 +2,11 @@ module.exports = app => {
     const router = require('express').Router({
         mergeParams: true
     })
+    const jwt = require('jsonwebtoken')
     const assert = require('http-assert')
     const mongoose = require('mongoose')
     const Users = mongoose.model('User')
     const Mails = mongoose.model('Mail')
-
-    app.get('/admin/api/test', async (req, res) => {
-        assert(!true, 400, 'bad')
-    })
 
     router.get('/mail/recive', async function (req, res) {
         const mails = await Mails.find();
@@ -27,16 +24,27 @@ module.exports = app => {
             username: username,
             password: password
         })
-        res.send(user)
+        res.send({
+            message: '新規登録完了',
+            uid: user.id,
+            username: user.username
+        })
     })
 
     router.post('/user/login', async (req, res) => {
         const {username, password} = req.body
         const user = await Users.findOne({
-            username: username,
-            password: password
+            username: username
+        }).select('+password')
+        assert(user, 401, '入力したユーザが見つかりませんでした')
+        const isValid = require('bcrypt').compareSync(password, user.password)
+        assert(isValid, 401, 'パスワードが正しくありません')
+        const token = jwt.sign({ id: user._id }, app.get('secret'))
+        res.send({
+            uid: user._id,
+            username: user.username,
+            access_token: token
         })
-        res.send(user)
     })
 
     app.use('/api', router)
