@@ -8,14 +8,16 @@ module.exports = app => {
     const Users = mongoose.model('User')
     const Mails = mongoose.model('Mail')
 
-    router.get('/mail/recive', async function (req, res) {
+    const AuthMiddleware = require('../middleware/auth')
+
+    router.get('/mail/recive', AuthMiddleware, async function (req, res) {
         const mails = await Mails.find();
-        res.send(mails);
+        res.send(mails)
     })
     
-    router.get('/mail/recive/:id', async function (req, res) {
+    router.get('/mail/recive/:id', AuthMiddleware, async function (req, res) {
         const mail = await Mails.findById(req.params.id)
-        res.send(mail);
+        res.send(mail)
     })
 
     router.post('/user/register', async (req, res) => {
@@ -50,7 +52,6 @@ module.exports = app => {
     app.use('/api', router)
 
     app.use(async (err, req, res, next) => {
-        // console.log(err)
         res.status(err.statusCode || 500).send({
           message: err.message
         })
