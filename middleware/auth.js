@@ -1,7 +1,7 @@
 module.exports = options => {
     const assert = require('http-assert')
     const jwt = require('jsonwebtoken')
-    const Users = require('../model/User')
+    const Users = require('../model/user')
 
     return async(req, res, next) => {
         const token = String(req.headers.authorization || '').split(' ').pop()

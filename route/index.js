@@ -54,6 +54,21 @@ module.exports = app => {
         })
     })
 
+    router.get('/mail/domain', async(req, res) => {
+        const domain = await Domain.find()
+        var domainList = []
+        await domain.forEach((data) => {
+            domainList.push({
+                did: data._id,
+                domain: data.domain
+            })
+        })
+        res.send({
+            message: '完了',
+            data: domainList
+        })
+    })
+
     router.get('/mail/recive', async (req, res) => {
         const mails = await Mails.find();
         res.send(mails)
@@ -62,7 +77,6 @@ module.exports = app => {
     router.get('/mail/recive/:id', async(req, res) => {
         const address = await Address.findById(req.params.id)
         assert(address, 401, 'このアドレス存在していません')
-        console.log(String(address.user), String(req.user._id))
         assert(String(address.user) == String(req.user._id), 403, 'アクセス権限がありません')
         const mail = await Mails.find({
             address: address._id
