@@ -7,7 +7,8 @@ const Address = mongoose.model('Address', new mongoose.Schema({
     domain: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Domain'},
-    path: { type: String }
+    path: { type: String },
+    updatedAt: { type: Date, default: Date.now() }
 }))
 
 module.exports = Address

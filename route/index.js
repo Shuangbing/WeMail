@@ -40,7 +40,7 @@ module.exports = app => {
     })
 
     router.get('/mail/address', async(req, res) => {
-        const address = await Address.find({user: req.user._id}).populate('domain')
+        const address = await Address.find({user: req.user._id}).sort({updatedAt: -1}).populate('domain')
         var addressList = []
         await address.forEach((data) => {
             addressList.push({
@@ -54,29 +54,19 @@ module.exports = app => {
         })
     })
 
-    router.get('/mail/domain', async(req, res) => {
-        const domain = await Domain.find()
-        var domainList = []
-        await domain.forEach((data) => {
-            domainList.push({
-                did: data._id,
-                domain: data.domain
-            })
-        })
+    router.get('/mail/recive', async (req, res) => {
+        const address = await Address.find({user: req.user._id})
+        const mails = await Mails.find({ address: address });
         res.send({
             message: '完了',
-            data: domainList
+            data: mails
         })
-    })
-
-    router.get('/mail/recive', async (req, res) => {
-        const mails = await Mails.find();
-        res.send(mails)
     })
     
     router.get('/mail/recive/:id', async(req, res) => {
         const address = await Address.findById(req.params.id)
         assert(address, 401, 'このアドレス存在していません')
+        console.log(String(address.user), String(req.user._id))
         assert(String(address.user) == String(req.user._id), 403, 'アクセス権限がありません')
         const mail = await Mails.find({
             address: address._id
@@ -87,9 +77,9 @@ module.exports = app => {
         })
     })
 
-    app.use('/api', AuthMiddleware(), router)
+    app.use('/api/app', AuthMiddleware(), router)
 
-    app.post('/user/register', async (req, res) => {
+    app.post('/api/auth/register', async (req, res) => {
         const {username, password} = req.body
         const user = await Users.create({
             username: username,
@@ -102,14 +92,14 @@ module.exports = app => {
         })
     })
 
-    app.post('/user/login', async (req, res) => {
+    app.post('/api/auth/login', async (req, res) => {
         const {username, password} = req.body
         const user = await Users.findOne({
             username: username
         }).select('+password')
-        assert(user, 401, '入力したユーザが見つかりませんでした')
+        assert(user, 402, '入力したユーザが見つかりませんでした')
         const isValid = require('bcrypt').compareSync(password, user.password)
-        assert(isValid, 401, 'パスワードが正しくありません')
+        assert(isValid, 402, 'パスワードが正しくありません')
         const token = jwt.sign({ uid: user._id }, app.get('secret'))
         res.send({
             uid: user._id,
