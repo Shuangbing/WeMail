@@ -13,6 +13,8 @@ module.exports = app => {
     const AuthMiddleware = require('../middleware/auth')
 
     router.post('/mail/address', async(req, res) => {
+        const addressList = await Address.find({user: req.user._id})
+        assert(addressList.length < 10, 401, 'アドレス作成の上限に至りました')
         const {random, domain, path} = req.body
         const domains = await Domain.find()
         assert(domains.length > 0, 405, 'ご利用可能のドメインがありません')
@@ -33,8 +35,10 @@ module.exports = app => {
         }, (error, data) => {
             res.send({
                 message: '新しいアドレス作成できました',
-                aid: data._id,
-                address: RandomPath+'@'+domains[RandomDomain].domain
+                data: {
+                    aid: data._id,
+                    address: RandomPath+'@'+domains[RandomDomain].domain
+                }
             })
         })
     })
